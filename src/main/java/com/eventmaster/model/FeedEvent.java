@@ -19,6 +19,13 @@ public class FeedEvent {
     private String imageUrl;
     private LocalDateTime createdAt;
     private String feedSource;
+    private Integer likeCount;
+    private Integer rsvpCount;
+    private Integer goingCount;
+    private Integer interestedCount;
+    private Integer notGoingCount;
+    private String recurrenceType;
+    private String recurrenceEndDate;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -55,4 +62,25 @@ public class FeedEvent {
 
     public String getFeedSource() { return feedSource; }
     public void setFeedSource(String feedSource) { this.feedSource = feedSource; }
+
+    public Integer getLikeCount() { return likeCount; }
+    public void setLikeCount(Integer likeCount) { this.likeCount = likeCount; }
+
+    public Integer getRsvpCount() { return rsvpCount; }
+    public void setRsvpCount(Integer rsvpCount) { this.rsvpCount = rsvpCount; }
+
+    public Integer getGoingCount() { return goingCount; }
+    public void setGoingCount(Integer goingCount) { this.goingCount = goingCount; }
+
+    public Integer getInterestedCount() { return interestedCount; }
+    public void setInterestedCount(Integer interestedCount) { this.interestedCount = interestedCount; }
+
+    public Integer getNotGoingCount() { return notGoingCount; }
+    public void setNotGoingCount(Integer notGoingCount) { this.notGoingCount = notGoingCount; }
+
+    public String getRecurrenceType() { return recurrenceType; }
+    public void setRecurrenceType(String recurrenceType) { this.recurrenceType = recurrenceType; }
+
+    public String getRecurrenceEndDate() { return recurrenceEndDate; }
+    public void setRecurrenceEndDate(String recurrenceEndDate) { this.recurrenceEndDate = recurrenceEndDate; }
 }
