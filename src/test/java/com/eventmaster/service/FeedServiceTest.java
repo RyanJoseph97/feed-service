@@ -59,7 +59,7 @@ public class FeedServiceTest {
     @Test
     public void getFeed_followingType_onlyCallsFollowingClients() {
         when(userServiceClient.getFollowingUsernames(eq("bob"), any())).thenReturn(List.of("alice"));
-        when(eventServiceClient.getEventsByCreator(eq("alice"))).thenReturn(List.of(event1));
+        when(eventServiceClient.getUpcomingEventsByCreator(eq("alice"), any())).thenReturn(List.of(event1));
 
         Page<FeedEvent> result = feedService.getFeed("bob", FeedType.FOLLOWING, PageRequest.of(0, 20), null);
 
@@ -81,8 +81,8 @@ public class FeedServiceTest {
     @Test
     public void getFeed_followingType_multipleFollowedUsers_aggregatesEvents() {
         when(userServiceClient.getFollowingUsernames(eq("bob"), any())).thenReturn(List.of("alice", "carol"));
-        when(eventServiceClient.getEventsByCreator(eq("alice"))).thenReturn(List.of(event1));
-        when(eventServiceClient.getEventsByCreator(eq("carol"))).thenReturn(List.of(event3));
+        when(eventServiceClient.getUpcomingEventsByCreator(eq("alice"), any())).thenReturn(List.of(event1));
+        when(eventServiceClient.getUpcomingEventsByCreator(eq("carol"), any())).thenReturn(List.of(event3));
 
         Page<FeedEvent> result = feedService.getFeed("bob", FeedType.FOLLOWING, PageRequest.of(0, 20), null);
 
@@ -117,7 +117,7 @@ public class FeedServiceTest {
     @Test
     public void getFeed_allType_mergesFollowingAndRecommended() {
         when(userServiceClient.getFollowingUsernames(eq("bob"), any())).thenReturn(List.of("alice"));
-        when(eventServiceClient.getEventsByCreator(eq("alice"))).thenReturn(List.of(event1));
+        when(eventServiceClient.getUpcomingEventsByCreator(eq("alice"), any())).thenReturn(List.of(event1));
         when(eventServiceClient.getUpcomingPublicEvents(any())).thenReturn(List.of(event2, event3));
 
         Page<FeedEvent> result = feedService.getFeed("bob", FeedType.ALL, PageRequest.of(0, 20), null);
@@ -129,7 +129,7 @@ public class FeedServiceTest {
     public void getFeed_allType_deduplicatesEventsAppearingInBothSources() {
         // event1 comes from following AND from recommended public events
         when(userServiceClient.getFollowingUsernames(eq("bob"), any())).thenReturn(List.of("alice"));
-        when(eventServiceClient.getEventsByCreator(eq("alice"))).thenReturn(List.of(event1));
+        when(eventServiceClient.getUpcomingEventsByCreator(eq("alice"), any())).thenReturn(List.of(event1));
         when(eventServiceClient.getUpcomingPublicEvents(any())).thenReturn(List.of(event1, event2));
 
         Page<FeedEvent> result = feedService.getFeed("bob", FeedType.ALL, PageRequest.of(0, 20), null);
