@@ -38,7 +38,7 @@ public class FeedService {
             List<String> following = userServiceClient.getFollowingUsernames(username, token);
             logger.debug("User '{}' follows {} accounts", username, following.size());
             for (String followedUser : following) {
-                List<FeedEvent> events = eventServiceClient.getUpcomingEventsByCreator(followedUser, now);
+                List<FeedEvent> events = eventServiceClient.getEventsByCreator(followedUser);
                 for (FeedEvent event : events) {
                     if (event.getId() != null && seenIds.add(event.getId())) {
                         event.setFeedSource("FOLLOWING");

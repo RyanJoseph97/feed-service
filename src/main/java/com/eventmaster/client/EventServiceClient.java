@@ -31,10 +31,9 @@ public class EventServiceClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public List<FeedEvent> getUpcomingEventsByCreator(String creatorUsername, LocalDateTime startAfter) {
+    public List<FeedEvent> getEventsByCreator(String creatorUsername) {
         URI uri = UriComponentsBuilder.fromHttpUrl(baseUrl + "/events")
                 .queryParam("creatorUsername", creatorUsername)
-                .queryParam("startAfter", startAfter.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .queryParam("size", 50)
                 .build()
                 .encode()
