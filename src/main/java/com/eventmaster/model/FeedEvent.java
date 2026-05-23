@@ -26,6 +26,7 @@ public class FeedEvent {
     private Integer notGoingCount;
     private String recurrenceType;
     private String recurrenceEndDate;
+    private String category;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -83,4 +84,7 @@ public class FeedEvent {
 
     public String getRecurrenceEndDate() { return recurrenceEndDate; }
     public void setRecurrenceEndDate(String recurrenceEndDate) { this.recurrenceEndDate = recurrenceEndDate; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }

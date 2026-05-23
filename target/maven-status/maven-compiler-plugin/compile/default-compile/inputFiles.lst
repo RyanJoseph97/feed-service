@@ -1,0 +1,13 @@
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/FeedServiceApplication.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/config/WebConfig.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/model/FollowerSummary.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/config/SecurityConfig.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/model/FeedType.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/exception/GlobalExceptionHandler.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/config/RestTemplateConfig.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/client/EventServiceClient.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/controller/FeedController.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/model/PageContent.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/client/UserServiceClient.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/service/FeedService.java
+/Users/ryanjoseph/dev/repos/EventMaster/feed-service/src/main/java/com/eventmaster/model/FeedEvent.java
