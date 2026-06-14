@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 public class FeedService {
@@ -37,15 +39,20 @@ public class FeedService {
             // Forward the caller's token — user-service requires auth on /following
             List<String> following = userServiceClient.getFollowingUsernames(username, token);
             logger.debug("User '{}' follows {} accounts", username, following.size());
-            for (String followedUser : following) {
-                List<FeedEvent> events = eventServiceClient.getUpcomingEventsByCreator(followedUser, now);
-                for (FeedEvent event : events) {
-                    if (event.getId() != null && seenIds.add(event.getId())) {
-                        event.setFeedSource("FOLLOWING");
-                        all.add(event);
-                    }
-                }
-            }
+            // Fan out to event-service in parallel — one call per followed user
+            List<CompletableFuture<List<FeedEvent>>> futures = following.stream()
+                    .map(u -> CompletableFuture.supplyAsync(
+                            () -> eventServiceClient.getUpcomingEventsByCreator(u, now)))
+                    .collect(Collectors.toList());
+            futures.stream()
+                    .map(CompletableFuture::join)
+                    .flatMap(List::stream)
+                    .forEach(event -> {
+                        if (event.getId() != null && seenIds.add(event.getId())) {
+                            event.setFeedSource("FOLLOWING");
+                            all.add(event);
+                        }
+                    });
         }
 
         if (type == FeedType.RECOMMENDED || type == FeedType.ALL) {
