@@ -42,6 +42,15 @@ public class EventServiceClient {
         return fetch(uri, "events for creator '" + creatorUsername + "'");
     }
 
+    public List<FeedEvent> getUpcomingEventsByCreators(List<String> creatorUsernames, LocalDateTime startAfter) {
+        if (creatorUsernames == null || creatorUsernames.isEmpty()) return Collections.emptyList();
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl + "/events")
+                .queryParam("startAfter", startAfter.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                .queryParam("size", 500);
+        creatorUsernames.forEach(u -> builder.queryParam("creatorUsernames", u));
+        return fetch(builder.build().encode().toUri(), "events for " + creatorUsernames.size() + " creators");
+    }
+
     public List<FeedEvent> getUpcomingPublicEvents(LocalDateTime startAfter) {
         URI uri = UriComponentsBuilder.fromHttpUrl(baseUrl + "/events")
                 .queryParam("visibility", "PUBLIC")

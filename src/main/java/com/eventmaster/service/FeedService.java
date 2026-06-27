@@ -1,6 +1,7 @@
 package com.eventmaster.service;
 
 import com.eventmaster.client.EventServiceClient;
+import com.eventmaster.client.RecommendationServiceClient;
 import com.eventmaster.client.UserServiceClient;
 import com.eventmaster.model.FeedEvent;
 import com.eventmaster.model.FeedType;
@@ -26,6 +27,12 @@ public class FeedService {
     @Autowired
     private EventServiceClient eventServiceClient;
 
+    @Autowired
+    private RecommendationServiceClient recommendationServiceClient;
+
+    // How many ranked candidates to pull from recommendation-service (its endpoint caps at 100).
+    private static final int RECOMMENDED_LIMIT = 100;
+
     public Page<FeedEvent> getFeed(String username, FeedType type, Pageable pageable, String token) {
         logger.debug("Building feed for '{}' type={}", username, type);
 
@@ -37,19 +44,18 @@ public class FeedService {
             // Forward the caller's token — user-service requires auth on /following
             List<String> following = userServiceClient.getFollowingUsernames(username, token);
             logger.debug("User '{}' follows {} accounts", username, following.size());
-            for (String followedUser : following) {
-                List<FeedEvent> events = eventServiceClient.getUpcomingEventsByCreator(followedUser, now);
-                for (FeedEvent event : events) {
-                    if (event.getId() != null && seenIds.add(event.getId())) {
-                        event.setFeedSource("FOLLOWING");
-                        all.add(event);
-                    }
+            List<FeedEvent> followingEvents = eventServiceClient.getUpcomingEventsByCreators(following, now);
+            followingEvents.forEach(event -> {
+                if (event.getId() != null && seenIds.add(event.getId())) {
+                    event.setFeedSource("FOLLOWING");
+                    all.add(event);
                 }
-            }
+            });
         }
 
         if (type == FeedType.RECOMMENDED || type == FeedType.ALL) {
-            List<FeedEvent> recommended = eventServiceClient.getUpcomingPublicEvents(now);
+            // recommendation-service returns events already ranked by descending score.
+            List<FeedEvent> recommended = recommendationServiceClient.getRecommendedEvents(RECOMMENDED_LIMIT, token);
             for (FeedEvent event : recommended) {
                 if (event.getId() != null && seenIds.add(event.getId())) {
                     event.setFeedSource("RECOMMENDED");
@@ -58,7 +64,11 @@ public class FeedService {
             }
         }
 
-        all.sort(Comparator.comparing(FeedEvent::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())));
+        // Preserve the recommender's score ordering for a pure RECOMMENDED feed.
+        // FOLLOWING and ALL are chronological so followed creators' events read like a timeline.
+        if (type != FeedType.RECOMMENDED) {
+            all.sort(Comparator.comparing(FeedEvent::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())));
+        }
 
         int total = all.size();
         int offset = (int) pageable.getOffset();
